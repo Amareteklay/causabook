@@ -1,0 +1,271 @@
+---
+title: "Correlation vs Causation"
+---
+
+## What correlation can and cannot tell you
+
+A correlation (or regression coefficient, or feature importance score) is a statement about **co-movement in observed data**. A causal claim is a statement about **what would change if we intervened**.
+
+- **Association:** “Among observed units, $X$ and $Y$ vary together.”
+- **Causation:** “If we set $X$ to a different value, $Y$ would change.”
+
+These are different objects. Many associations are causal (e.g., smoking and lung cancer), but many are not (e.g., ice cream sales and drowning). The point is not that correlation is useless—it is that *correlation is not automatically transportable into an intervention claim* without a credible identification strategy. @shmueli2010 @holland1986
+
+A good working slogan:
+
+> **Causality is about comparisons across possible worlds; statistics is about patterns within one world.**
+
+## The three reasons associations go wrong
+
+Most “correlation ≠ causation” failures fall into three buckets:
+
+1. **Confounding (common causes)**
+2. **Reverse causality (outcome influences the “cause”)**
+3. **Selection/conditioning bias (including collider bias and bad controls)**
+
+We’ll focus on (1) and (3), because they show up everywhere in applied work—and because DAGs make them easy to reason about. @pearl2009 @hernanrobins2024
+
+---
+
+## A tiny DAG primer (just enough to be dangerous)
+
+A **directed acyclic graph (DAG)** is a set of nodes (variables) connected by directed arrows that represent causal relationships. “Acyclic” means you can’t follow arrows and return to the same node.
+
+We’ll use DAGs for one purpose: deciding **what to adjust for** to estimate a causal effect.
+
+### Paths, and why we care
+
+In a DAG, associations can flow along **paths** connecting variables. Some paths reflect real causal influence; others reflect spurious association induced by common causes or conditioning.
+
+There are two core patterns to memorize:
+
+1. **Fork (confounding / common cause):** $X \leftarrow U \rightarrow Y$  
+   If $U$ is unobserved or unadjusted, $X$ and $Y$ will be associated even if $X$ does not cause $Y$.
+
+2. **Collider (selection bias):** $X \rightarrow C \leftarrow Y$  
+   Conditioning on $C$ (or on a descendant of $C$) *creates* association between $X$ and $Y$, even if none existed.
+
+Everything else is a remix of these.
+
+---
+
+## Confounding: the classic trap
+
+### The setup
+
+You want the causal effect of $X$ on $Y$.
+
+A confounder $U$ causes both $X$ and $Y$:
+
+```mermaid
+graph LR
+  U[U: confounder] --> X[X: treatment]
+  U --> Y[Y: outcome]
+  X --> Y
+```
+
+In this world, the raw association between $X$ and $Y$ mixes:
+
+- the causal effect $X \to Y$
+- the spurious association induced by $U$
+
+If you regress $Y$ on $X$ without addressing $U$, you generally do **not** get a causal effect. This is the default failure mode in observational data.
+
+### The fix (conceptually)
+
+If you can measure $U$, one strategy is to adjust for it so that—within levels of $U$—assignment to $X$ is “as good as random.” In the potential outcomes language, this is **(conditional) exchangeability / unconfoundedness**:
+
+$$
+Y(1),\, Y(0) \perp\!\!\!\perp X \mid U.
+$$
+
+DAG language: adjust for a set of variables that **blocks all backdoor paths** from $X$ to $Y$. @pearl2009
+
+### A concrete example
+
+- $X$: taking a job training program
+- $Y$: later income
+- $U$: motivation / ability (often partly unobserved)
+
+Motivated people are more likely to enroll and also more likely to earn more later, even without the program. The observed association can exaggerate (or even invent) the program’s effect.
+
+---
+
+## “Bad controls”: adjusting can make you worse
+
+A common mistake is thinking: “If I control for more variables, I’m safer.”
+
+Not true.
+
+Some controls **introduce bias** by blocking part of the causal effect you want, or by opening spurious paths. This is why causal inference is not “just run a big regression.”
+
+There are two major “bad control” categories:
+
+1. **Post-treatment variables** (mediators and downstream consequences of treatment)
+2. **Colliders** (variables caused by both treatment and outcome, or their causes)
+
+### 1) Post-treatment variables (don’t condition on the future)
+
+Suppose $X$ affects $M$, and $M$ affects $Y$:
+
+```mermaid
+graph LR
+  X[X] --> M[M: mediator]
+  M --> Y[Y]
+  X --> Y
+```
+
+If you adjust for $M$, you are no longer estimating the **total effect** of $X$ on $Y$. You are estimating a **controlled direct effect** (often not what you intended), and you can also introduce bias if there are unmeasured causes of $M$ and $Y$. @hernanrobins2024
+
+**Practical rule:** If a variable is plausibly affected by the treatment, treat it as radioactive until you are very explicit about which estimand you want.
+
+### 2) Collider bias (selection bias in disguise)
+
+A collider looks like this:
+
+```mermaid
+graph LR
+  X[X] --> C[C: collider]
+  Y[Y] --> C
+```
+
+Here’s the key:
+
+- Without conditioning, the path $X \to C \leftarrow Y$ is **closed**.
+- If you condition on $C$ (control for it, stratify on it, restrict the sample by it), the path becomes **open**, creating a spurious association between $X$ and $Y$. @pearl2009
+
+#### The classic intuition
+
+Let:
+
+- $X$ = talent
+- $Y$ = connections
+- $C$ = admission to an elite program
+
+If admission depends on either talent or connections, then among *admitted* students, talent and connections can become negatively correlated (if you have high talent you can “get in” with fewer connections and vice versa). Conditioning on $C$ induces an association that was not there in the full population.
+
+That induced association can contaminate downstream analyses.
+
+---
+
+## A quick identification checklist for “should I control for this?”
+
+When you are tempted to add a control variable $Z$, ask:
+
+### A. Is $Z$ a cause of both $X$ and $Y$?
+- If yes: often a good control (candidate confounder).
+
+### B. Could $Z$ be affected by $X$?
+- If yes: it’s post-treatment → controlling can bias the total effect.
+
+### C. Is $Z$ caused by something that also causes $Y$?
+- If yes, and $Z$ is downstream of $X$ or is a collider/descendant of a collider, adjusting can open bad paths.
+
+If you can’t answer these questions, you don’t yet have a defensible causal model. Draw a DAG.
+
+---
+
+## Why DAGs are so useful for applied work
+
+DAGs do not magically provide causality. What they do is:
+
+1. **Force you to state assumptions explicitly**
+2. **Tell you which adjustments are logically valid given those assumptions**
+3. **Reveal hidden failure modes** (especially colliders and post-treatment controls)
+
+They also help you communicate: a simple figure can explain in seconds what would take pages of verbal argument. @pearl2009
+
+---
+
+## A minimal “backdoor” intuition (no do-calculus required)
+
+You want the causal effect of $X$ on $Y$.
+
+- The causal effect flows along the **front-door** arrow(s) $X \to Y$.
+- Spurious association flows along **backdoor paths** that enter $X$ from behind (through a parent of $X$).
+
+If you adjust for variables that block all backdoor paths, then (under the DAG’s correctness) the association you estimate corresponds to a causal effect. @pearl2009
+
+You do not need to memorize the formal criterion yet; you need the habit:
+
+> **Before estimating, ask: what paths create non-causal association between $X$ and $Y$ in my setting?**
+
+---
+
+## Two worked mini-cases (with “what to adjust for”)
+
+### Case 1: Program evaluation with confounding
+
+- $X$: program participation
+- $Y$: earnings
+- $U$: baseline ability / motivation
+
+DAG:
+
+```mermaid
+graph LR
+  U[Ability/Motivation] --> X[Program]
+  U --> Y[Earnings]
+  X --> Y
+```
+
+- Adjusting for $U$ (or credible proxies) is generally helpful.
+- Adjusting for variables affected by the program (e.g., “hours studied during program”) changes the estimand and can bias.
+
+### Case 2: “Bad control” via collider
+
+- $X$: treatment (e.g., training)
+- $Y$: earnings
+- $C$: “employed at follow-up” (often influenced by both training and unobserved factors related to earnings)
+
+DAG sketch:
+
+```mermaid
+graph LR
+  X[Training] --> C[Employed at follow-up]
+  U[Unobserved employability] --> C
+  U --> Y[Earnings]
+  X --> Y
+```
+
+If you restrict analysis to only those employed (conditioning on $C$), you can induce selection bias because $C$ is a collider on the path $X \to C \leftarrow U \to Y$.
+
+Practical lesson: “analyze only those who remain in the sample / employed / observed” can be a causal landmine.
+
+---
+
+## What this chapter should change in your workflow
+
+From here on, before you run a model, you should be able to say:
+
+1. **Estimand:** total effect? direct effect? effect on treated?
+2. **Threat:** what creates spurious association?
+3. **Design:** what comparison approximates the counterfactual?
+4. **Adjustment:** what variables block backdoor paths without introducing new bias?
+
+If you can’t answer these, your regression is a descriptive analysis, not a causal one—and that can still be useful, but it should be labeled honestly.
+
+---
+
+## Exercises
+
+1. **Collider spotting**  
+   Create a real-world example of $X \to C \leftarrow Y$ where $C$ is something like “selected,” “accepted,” “observed,” or “diagnosed.”  
+   Explain how conditioning on $C$ could reverse or create an association.
+
+2. **Bad control diagnosis**  
+   You estimate the effect of an online course ($X$) on income ($Y$).  
+   A colleague suggests controlling for “hours spent studying during the course” ($M$).  
+   What estimand does this change you to? When might it be appropriate?
+
+3. **Draw your own DAG**  
+   Choose a question you care about. Draw a DAG with at least one confounder and one post-treatment variable.  
+   Identify one variable you *should* adjust for and one you *should not*.
+
+---
+
+## Further reading
+
+- @pearl2009 — graphs, colliders, identification logic  
+- @hernanrobins2024 — “bad control” intuition and careful causal contrasts  
+- @holland1986 — why causal inference is a different kind of inference

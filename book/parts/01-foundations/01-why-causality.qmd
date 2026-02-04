@@ -1,0 +1,182 @@
+---
+title: "Why Causality?"
+---
+
+## The kind of question that creates value
+
+Most questions that matter—scientifically, commercially, politically—are not “what tends to happen?” but:
+
+- **What would happen if we changed something?**
+- **What would have happened if we had not done X?**
+- **What policy or decision would have produced better outcomes?**
+
+These are *causal* questions. They are about **interventions** (doing) and **counterfactuals** (what-if), not merely about patterns in observed data. This is why causal inference sits at the center of program evaluation, medicine, product strategy, development economics, and modern AI governance.
+
+A concise way to say it:
+
+> Prediction is about *forecasting outcomes under the world as it is*.  
+> Causal inference is about *forecasting outcomes under worlds we might create*.
+
+This is not an academic distinction; it changes what you should measure, what you should adjust for, what you should not adjust for, and what claims you can responsibly make. :contentReference[oaicite:0]{index=0}
+
+## The counterfactual core
+
+At the heart of causal inference is a simple idea:
+
+> To define the effect of a treatment for a unit, we must compare **the outcome if treated** to **the outcome if not treated**.
+
+But you never observe both outcomes for the same unit at the same time. This is the “fundamental problem” (or missing-data view) of causal inference: the key comparison is inherently counterfactual. The potential outcomes framework (often called the Neyman–Rubin framework) formalizes this idea and makes clear why causal questions require assumptions beyond the observed data. :contentReference[oaicite:1]{index=1}
+
+### A minimal definition
+
+Let:
+
+- $Y_i(1)$ = outcome for unit $i$ if treated
+- $Y_i(0)$ = outcome for unit $i$ if not treated
+- $D_i \in \{0,1\}$ indicates treatment received
+
+Then the **individual causal effect** is:
+
+$$
+\tau_i = Y_i(1) - Y_i(0).
+$$
+
+A common target is the **average treatment effect (ATE)**:
+
+$$
+\text{ATE} = \mathbb{E}\!\left[\,Y(1) - Y(0)\,\right].
+$$
+
+
+We observe either \(Y_i(1)\) or \(Y_i(0)\), never both. Everything you will learn—randomized trials, matching, DiD, IV, RDD, synthetic control—exists to approximate the missing counterfactual as credibly as possible. :contentReference[oaicite:2]{index=2}
+
+## Why correlation and regression are not enough
+
+“Correlation is not causation” is correct but incomplete. The deeper point is:
+
+- **Association** answers: *What tends to co-occur?*
+- **Causation** answers: *What would change if we intervened?*
+
+A regression coefficient is not inherently causal or non-causal; it depends on whether you have designed (or justified) a comparison that mimics the counterfactual. Without a causal design, regression can be an extremely efficient way to compute the wrong number.
+
+Two recurring failure modes:
+
+1. **Confounding**: a third variable affects both treatment and outcome.
+2. **Selection/conditioning bias**: adjusting for the wrong variable (especially a collider) creates a spurious association.
+
+Causal inference is, in large part, the discipline of avoiding these traps by explicitly reasoning about *data generation* and *identification*. :contentReference[oaicite:3]{index=3}
+
+## A ladder of questions: association → intervention → counterfactual
+
+One of the most useful mental models is a hierarchy of causal questions:
+
+1. **Association**: “What do we see?”  
+2. **Intervention**: “What happens if we do X?”  
+3. **Counterfactuals**: “What would have happened if…?”
+
+This “three-layer” view emphasizes that not all questions are answerable from the same information, and that moving up the ladder requires stronger assumptions or richer data. :contentReference[oaicite:4]{index=4}
+
+### Example (simple but clarifying)
+
+- Association: “People who take a program have higher income later.”
+- Intervention: “If we offered the program to similar people, would their income rise?”
+- Counterfactual: “For this participant, would they have earned less without the program?”
+
+The first statement can be true even if the program does nothing, because the people who join may differ systematically from those who do not.
+
+## Randomization: why it’s the gold standard
+
+Randomized experiments are powerful because they solve the counterfactual problem by design. Random assignment breaks the link between treatment and confounders (observed *and* unobserved), so treated and control groups are comparable in expectation.
+
+Historically, modern experimental design and randomization are closely tied to early work in agriculture and statistics, associated with Fisher and later developments that formalized the logic of experimentation. :contentReference[oaicite:5]{index=5}
+
+But experiments are not always feasible:
+
+- unethical (e.g., harm exposures)
+- impossible (macro policy)
+- too costly or slow
+- suffers from noncompliance, spillovers, attrition
+- limited external validity
+
+So causal inference becomes the art of building *quasi-experiments* and transparent assumptions when randomization is unavailable.
+
+## Observational data: identification is the real job
+
+When the world did not randomize treatment for you, you must argue that your estimate still corresponds to a causal estimand. This is **identification**: the step from a causal question (“what would happen if…”) to a quantity that can be estimated from observed data plus assumptions.
+
+Different methods correspond to different identification strategies:
+
+- **Selection on observables** (unconfoundedness): adjustment/matching/weighting
+- **Panel counterfactuals**: difference-in-differences, event studies
+- **Threshold-based assignment**: regression discontinuity
+- **Natural experiments**: instrumental variables
+- **Aggregated interventions**: synthetic controls and related methods
+
+A recurring theme in modern causal texts is that causal inference is not a cookbook: it requires domain knowledge, explicit assumptions, and sensitivity to threats. :contentReference[oaicite:6]{index=6}
+
+## Two complementary languages: potential outcomes and causal graphs
+
+You will see two main “languages” throughout this book.
+
+### Potential outcomes (counterfactual language)
+
+- Great for defining estimands (ATE, ATT, LATE)
+- Clarifies what is missing and what assumptions “fill the gap”
+- Natural for design-based thinking (experiments, matching, IV)
+
+This tradition is associated with work developed and popularized across statistics and econometrics, including clear modern treatments. :contentReference[oaicite:7]{index=7}
+
+### Structural causal models and DAGs (graph language)
+
+- Great for expressing assumptions about data generation
+- Helps decide what to adjust for (and what *not* to)
+- Supports general identification tools (e.g., do-calculus) and formal reasoning about interventions
+
+Pearl’s work made DAGs and structural causal models a central tool for modern causal inference across fields. :contentReference[oaicite:8]{index=8}
+
+**Pragmatic takeaway:** you don’t have to “pick a side.” In practice, high-quality causal work often uses both: potential outcomes to define the target, and graphs to defend the assumptions.
+
+## A motivating paradox: when aggregation flips conclusions
+
+Simpson’s paradox is famous because it demonstrates that the direction of an association can reverse when you condition on (or aggregate over) another variable. It’s often used to show that data alone cannot tell you which comparison is correct—causal reasoning is required. :contentReference[oaicite:9]{index=9}
+
+The lesson is not merely “watch out for confounding.” The deeper lesson is:
+
+> The right analysis depends on the **causal structure**—what causes what—not on statistical association alone.
+
+This is why causal inference needs explicit assumptions and design logic, not just bigger datasets or more flexible models.
+
+## What this book will train you to do
+
+By the end of the foundations part, you should be able to:
+
+1. Translate a real-world problem into a **causal estimand**
+2. State a **credible identification strategy** and the assumptions it requires
+3. Diagnose and communicate threats (confounding, selection bias, interference, measurement)
+4. Choose an estimator that matches the design (not the other way around)
+5. Perform robustness and sensitivity checks, and explain what they mean
+
+## Exercises
+
+1. **Association vs intervention**  
+   Pick a question you care about (policy, business, personal). Write:
+   - an association question
+   - an intervention question
+   - a counterfactual question  
+   Explain why each needs different information.
+
+2. **The missing counterfactual**  
+   For a training program evaluation, write down \(Y(1)\), \(Y(0)\), and the estimand you want (ATE or ATT).  
+   What data would you need in an ideal randomized experiment?
+
+3. **Design before estimation**  
+   Identify a setting where randomization is impossible. Suggest one quasi-experimental strategy (DiD, IV, RDD, SCM).  
+   Write one key assumption that would make it credible.
+
+## Further reading (high-value starting points)
+
+- @hernanrobins2024 — *Causal Inference: What If* (free online book; broad and careful) :contentReference[oaicite:10]{index=10}
+- @pearl2009 — *Causality* (formal causal graphs, SCMs, identification) :contentReference[oaicite:11]{index=11}
+- @imbensrubin2015 — *Causal Inference for Statistics, Social, and Biomedical Sciences* (potential outcomes, design-based) :contentReference[oaicite:12]{index=12}
+- @angristpischke2009 — *Mostly Harmless Econometrics* (applied econometric causal designs) :contentReference[oaicite:13]{index=13}
+- @holland1986 — “Statistics and Causal Inference” (classic framing; why causality is not just statistics) :contentReference[oaicite:14]{index=14}
