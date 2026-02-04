@@ -12,6 +12,9 @@ project:
 
 book:
   title: "Causal Inference"
+  favicon: assets/images/logo.png
+  navbar:
+    logo: assets/images/logo.png
   subtitle: "Living notes by Causalica"
   author: "Amare Teklay"
   date: last-modified

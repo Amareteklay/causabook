@@ -1,3 +1,7 @@
+![](assets/images/logo.svg){width=120 .only-html fig-alt="Causalica logo"}
+![](assets/images/logo.png){width=120 .only-pdf fig-alt="Causalica logo"}
+
+
 # Preface {.unnumbered}
 
 This is a Quarto book.

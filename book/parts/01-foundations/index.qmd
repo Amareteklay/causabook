@@ -1,8 +1,48 @@
-# Foundations
+---
+title: "Foundations"
+---
 
-These chapters build the core causal mindset: counterfactuals, bias, and decision-making.
+Causal inference is a way of thinking before it is a set of methods. The goal of this part is to build a reliable causal *mindset*: how to turn real questions into causal estimands, how to spot bias, and how to communicate assumptions.
+
+By the end of Foundations, you should be able to look at a claim like “$X$ improves $Y$” and ask the right follow-up questions:
+
+- *What exactly is the intervention?*
+- *What is the counterfactual?*
+- *What are the threats to identification?*
+- *What evidence would change my mind?*
 
 ## What you’ll be able to do
-- Draw causal graphs for real questions
-- Recognize common sources of bias
-- Translate problems into identification strategies
+
+- Translate a real-world question into a **causal estimand** (ATE, ATT, LATE; total vs direct effects)
+- Draw **DAGs** to make assumptions explicit and to decide what to adjust for (and what *not* to)
+- Recognize the major bias families: **confounding**, **selection/collider bias**, **post-treatment bias**, and **measurement issues**
+- Match a question + data structure to an identification strategy (experiments, DiD, RDD, IV, SCM)
+- Write conclusions with appropriate **scope and uncertainty** (what you learned, what you assumed, what remains fragile)
+
+## How to use this part
+
+Read it once quickly, then revisit it while you work on applications. The most important habit is: **design first, estimation second**.
+
+When you get stuck, use this loop:
+
+1. Write the estimand in words (and ideally in potential-outcomes notation)
+2. Draw a DAG of your best current causal story
+3. Identify backdoor paths and selection mechanisms
+4. Choose a design that makes the counterfactual credible
+5. Only then choose an estimator and code
+
+## Chapters in this part
+
+- **Why causality?** Why prediction and explanation are different tasks, and why counterfactuals are central.
+- **Correlation vs causation.** Confounding, colliders, and “bad controls” using DAG intuition.
+- **Causality for decisions.** Why the goal is often *better decisions*, not just “significant results”; how costs, benefits, and uncertainty enter.
+
+## A simple running example (we will reuse it)
+
+Throughout the book we’ll return to a few recurring stories—training programs, policy reforms, and interventions in systems—because causal reasoning is easier when you repeatedly test your understanding against concrete cases.
+
+If you’d like, pick one question now and keep it as *your* running example:
+
+> “What is the effect of $X$ on $Y$ for population $P$ over horizon $T$?”
+
+We’ll refine this question as you learn new tools.

@@ -1,0 +1,268 @@
+---
+title: "Causality for Decisions"
+---
+
+## Why “causal effect” is not the end goal
+
+In practice, you rarely do causal inference to admire an estimate. You do it to make a **choice**:
+
+- Should we expand a program?
+- Which policy should we adopt?
+- What price change should we implement?
+- Which intervention is worth funding?
+
+A causal estimate is an input to a decision, not the decision itself.
+
+This chapter builds a simple bridge:
+
+> **Causal inference** tells you what would happen under different actions.  
+> **Decision-making** tells you which action to take given goals, costs, uncertainty, and constraints.
+
+Even a perfectly identified causal effect can be irrelevant if it is not the effect you need for the decision at hand. @shmueli2010
+
+---
+
+## Step 1: Make the decision explicit
+
+Start by writing the decision in a form like:
+
+- **Action set:** $\mathcal{A} = \{a_0, a_1, \dots\}$ (do nothing, do something, choose intensity, choose timing)
+- **Target population:** who is affected?
+- **Outcome(s):** what matters (often multiple: benefits, harms, equity, budget)
+- **Time horizon:** short run vs long run
+- **Constraints:** budget, capacity, political feasibility, legal restrictions
+
+If you can’t state these, you are not ready to pick an estimand.
+
+---
+
+## Step 2: Pick the estimand that matches the decision
+
+Causal inference is full of estimands. The best estimand depends on what you will do.
+
+### Common estimands
+
+- **ATE:** average effect if everyone were treated vs not treated
+- **ATT:** average effect for those who actually got treated
+- **LATE:** effect for compliers (often in IV settings)
+
+In potential outcomes notation, with treatment $D \in \{0,1\}$:
+
+$$
+\text{ATE} = \mathbb{E}\!\left[ Y(1) - Y(0) \right].
+$$
+
+$$
+\text{ATT} = \mathbb{E}\!\left[ Y(1) - Y(0) \mid D = 1 \right].
+$$
+
+$$
+\text{LATE} = \mathbb{E}\!\left[ Y(1) - Y(0) \mid \text{compliers} \right].
+$$
+
+These are not interchangeable. @imbensrubin2015
+
+### Decision mapping examples
+
+- **Scaling a program nationwide:** ATE is often closer to the policy question than ATT.
+- **Improving a program already running for participants:** ATT may be more relevant.
+- **Policy lever that shifts participation at the margin (e.g., eligibility, encouragement):** LATE may be relevant (and also limited in scope). @angristpischke2009
+
+**Rule:** If you can’t explain in one sentence why your estimand matches your decision, you probably have the wrong estimand.
+
+---
+
+## Step 3: Convert effects into value (benefits, costs, and trade-offs)
+
+Most decisions require you to translate outcomes into some measure of value.
+
+A simple template is **net benefit** (or net present value):
+
+- $B(a)$ = expected benefits under action $a$
+- $C(a)$ = expected costs under action $a$
+
+Choose the action that maximizes expected net benefit:
+
+$$
+a^* = \arg\max_{a \in \mathcal{A}}\; \mathbb{E}\!\left[ B(a) - C(a) \right].
+$$
+
+This sounds obvious, but it forces clarity about what you value and what you count as a cost.
+
+### A minimal “treatment decision” example
+
+Suppose action $a_1$ is “treat” and $a_0$ is “do not treat.” Let:
+
+- outcome $Y$ = benefit metric (e.g., earnings, health, productivity)
+- per-unit treatment cost = $c$ (in same units, or monetized)
+
+Treat if the expected causal effect exceeds cost:
+
+$$
+\mathbb{E}\!\left[ Y(1) - Y(0) \right] > c.
+$$
+
+This is a **decision rule**, not an estimation procedure.
+
+---
+
+## Step 4: Uncertainty matters—don’t collapse it too early
+
+A single point estimate is not enough to decide responsibly. For decisions, you care about:
+
+- uncertainty in the effect estimate
+- uncertainty in costs
+- uncertainty in implementation (compliance, spillovers)
+- uncertainty in external validity (transportability)
+
+### “Statistical significance” is not the decision criterion
+
+A $p$-value answers a narrow question about sampling variation under a null hypothesis. Many decisions are better framed as:
+
+- What is the probability the effect is positive?
+- What is the probability the effect exceeds a policy-relevant threshold?
+- What is the worst-case plausible effect given threats to identification?
+
+This is why **intervals, sensitivity analyses, and robustness checks** are central in applied causal work. @hernanrobins2024
+
+### A threshold framing you can actually use
+
+Let $\tau$ be the effect and $\tau_0$ a “break-even” threshold (e.g., cost per unit). A decision-relevant quantity is:
+
+$$
+\Pr(\tau > \tau_0 \mid \text{data, assumptions}).
+$$
+
+Even without full Bayesian machinery, you can approximate this idea with confidence intervals plus a threshold test:
+
+- If the **entire** interval is above $\tau_0$: strong case to act.
+- If the interval overlaps $\tau_0$: decision depends on risk tolerance and value of more information.
+- If the entire interval is below $\tau_0$: strong case not to act.
+
+---
+
+## Step 5: Heterogeneous effects—who benefits, who is harmed?
+
+Average effects can hide distributional realities.
+
+Two interventions can have the same ATE but very different implications:
+
+- one helps everyone a little
+- another helps a minority a lot and harms others
+
+Decision-making often requires **targeting**:
+- Who should receive the intervention?
+- Under what conditions?
+- At what intensity?
+
+### A targeting view
+
+Let $X$ be covariates (needs, risk, baseline status). The decision might be a rule $g(X)$ determining treatment:
+
+- treat if $g(X)=1$
+
+The causal target becomes conditional effects like:
+
+$$
+\tau(x) = \mathbb{E}\!\left[ Y(1) - Y(0) \mid X=x \right].
+$$
+
+You rarely identify $\tau(x)$ perfectly, but even coarse heterogeneity (by subgroup) can radically improve decisions.
+
+**Warning:** Subgroup analysis is a bias magnet if done casually. Treat it as a design problem, not a fishing expedition.
+
+---
+
+## Step 6: External validity is part of the decision
+
+Even if your effect is internally valid, the decision is about **your** context:
+
+- a different population
+- a different time period
+- a different implementation capacity
+- different prices, incentives, or equilibrium responses
+
+So you should always say:
+
+- *What exactly is the population and intervention I identified?*
+- *How different is the target setting from the study setting?*
+- *What mechanisms might change the effect when scaled?*
+
+A useful practice is to separate claims:
+
+1. **Identified effect (study context):** what you can defend strongly
+2. **Transported effect (target context):** what you can defend with additional assumptions and evidence
+
+---
+
+## Step 7: The value of information (VOI) and “should we learn more first?”
+
+Sometimes the right decision is not “treat” or “don’t treat,” but:
+
+- **run a pilot**
+- **collect better data**
+- **wait for another policy cycle**
+- **change measurement**
+- **test implementation logistics**
+
+The decision depends on the **value of reducing uncertainty**.
+
+### Intuition (no heavy math)
+
+You can think of VOI as:
+
+> How much better would our decision be if we had better information, compared to acting now?
+
+If decisions are high-stakes and uncertainty is large, learning is valuable.
+If decisions are low-stakes or uncertainty won’t change the decision, learning is not worth it.
+
+A practical heuristic:
+
+- If your current evidence leaves you genuinely torn between two actions, consider a pilot or better identification.
+- If every plausible effect estimate points to the same choice, act (and monitor).
+
+---
+
+## A reusable “Causal → Decision” template
+
+When you finish an analysis, write a short decision memo with:
+
+1. **Decision:** what action is being considered?
+2. **Estimand:** what causal effect is relevant, and why?
+3. **Identification:** why you believe the estimate is causal (assumptions + threats)
+4. **Magnitude:** best estimate + interval
+5. **Decision threshold:** what effect size justifies action?
+6. **Risks:** key failure modes (bias, spillovers, scaling issues)
+7. **Recommendation:** act / pilot / gather more evidence
+
+This is how causal work becomes operational.
+
+---
+
+## Exercises
+
+1. **Estimand alignment**
+   You are advising a city on expanding a job training program that currently serves volunteers.
+   - What is the decision?
+   - Which estimand is most relevant (ATE, ATT, something else)?
+   - What would make your chosen estimand *misaligned* with the decision?
+
+2. **Decision threshold**
+   Suppose your program increases earnings by an estimated $\hat\tau = 800$ per year, with a 95% CI of $[100, 1500]$.
+   The program costs $c = 600$ per participant per year.
+   - How would you reason about acting vs piloting?
+   - What additional information would be most valuable?
+
+3. **Heterogeneity and targeting**
+   Imagine the program works mostly for participants with low baseline earnings.
+   - Write a simple targeting rule in words.
+   - What data and assumptions would you need to evaluate it causally?
+
+---
+
+## Further reading
+
+- @imbensrubin2015 — estimands and design-based thinking
+- @angristpischke2009 — applied causal designs and interpretation
+- @hernanrobins2024 — careful reasoning about bias, estimands, and robustness
+- @shmueli2010 — distinction between prediction and explanation (useful framing for goals)
