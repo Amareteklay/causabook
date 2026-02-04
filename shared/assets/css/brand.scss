@@ -1,0 +1,17 @@
+/*-- scss:defaults --*/
+$font-size-base: 1.05rem;
+$line-height-base: 1.6;
+$border-radius: 0.9rem;
+
+/*-- scss:rules --*/
+.page-columns .content {
+  max-width: 950px;
+}
+
+pre code {
+  font-size: 0.9em;
+}
+
+.callout {
+  border-radius: 12px;
+}

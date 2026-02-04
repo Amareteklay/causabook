@@ -1,0 +1,13 @@
+# Quarto
+.quarto/
+_book/
+_site/
+*.log
+*.aux
+*.out
+*.toc
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/

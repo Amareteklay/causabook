@@ -1,0 +1,8 @@
+# Foundations
+
+These chapters build the core causal mindset: counterfactuals, bias, and decision-making.
+
+## What you’ll be able to do
+- Draw causal graphs for real questions
+- Recognize common sources of bias
+- Translate problems into identification strategies

@@ -1,0 +1,68 @@
+project:
+  type: book
+  output-dir: _book
+  render:
+    - "*.qmd"
+    - "parts/**/*.qmd"
+    - "!**/README.md"
+    - "!**/drafts/**"
+    - "!../labs/**"
+    - "!../tools/**"
+    - "!../website/**"
+
+book:
+  title: "Causal Inference"
+  subtitle: "Living notes by Causalica"
+  author: "Amare Teklay"
+  date: last-modified
+  reader-mode: true
+  search: true
+  page-navigation: true
+
+  chapters:
+    - index.qmd
+
+    - part: "Foundations"
+      chapters:
+        - parts/01-foundations/index.qmd
+        - parts/01-foundations/01-why-causality.qmd
+        - parts/01-foundations/02-correlation-vs-causation.qmd
+        - parts/01-foundations/03-decision-making.qmd
+
+    - part: "Identification"
+      chapters:
+        - parts/02-identification/index.qmd
+
+    - part: "Models and Estimators"
+      chapters:
+        - parts/03-models/index.qmd
+
+    - part: "Development Economics Applications"
+      chapters:
+        - parts/04-development-econ/index.qmd
+
+    - part: "Agentic Causality"
+      chapters:
+        - parts/05-agentic-causality/index.qmd
+
+    - references.qmd
+
+bibliography: ../shared/bibliography/references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - ../shared/assets/css/brand.scss
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-copy: true
+    code-link: true
+    fig-cap-location: bottom
+    link-external-newwindow: true
+
+  pdf:
+    documentclass: scrreprt
+    toc: true
+    number-sections: true
