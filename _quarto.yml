@@ -8,7 +8,6 @@ project:
     - "!**/drafts/**"
     - "!../labs/**"
     - "!../tools/**"
-    - "!../website/**"
 
 book:
   title: "Causal Inference"
@@ -50,13 +49,13 @@ book:
 
     - references.qmd
 
-bibliography: ../shared/bibliography/references.bib
+bibliography: bibliography/references.bib
 
 format:
   html:
     theme:
       - cosmo
-      - ../shared/assets/css/brand.scss
+      - assets/css/brand.scss
     toc: true
     toc-depth: 3
     number-sections: true

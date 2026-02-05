@@ -11,3 +11,5 @@ _site/
 .DS_Store
 Thumbs.db
 .vscode/
+/.quarto/
+**/*.quarto_ipynb
