@@ -63,6 +63,39 @@ format:
     code-link: true
     fig-cap-location: bottom
     link-external-newwindow: true
+    include-in-header:
+      text: |
+        <style>
+          /* Landing lockup */
+          .brand-lockup{
+            display:flex;
+            align-items:center;
+            gap:14px;
+            margin: 0.25rem 0 1.25rem 0;
+          }
+          .brand-lockup img{
+            width:84px;
+            height:auto;
+            display:block;
+          }
+          .brand-wordmark{
+            line-height:1;
+          }
+          .brand-wordmark .brand-name{
+            font-weight:800;
+            font-size:1.8rem;
+            letter-spacing:-0.02em;
+            margin:0;
+          }
+          .brand-wordmark .brand-tagline{
+            margin:0.25rem 0 0 0;
+            opacity:0.75;
+            font-size:0.98rem;
+          }
+
+          /* Optional: keep title block a bit tighter so the lockup feels intentional */
+          .quarto-title-block { margin-bottom: 0.75rem; }
+        </style>
 
   pdf:
     documentclass: scrreprt

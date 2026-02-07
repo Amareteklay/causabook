@@ -1,9 +1,77 @@
-![](assets/images/logo.svg){width=120 .only-html fig-alt="Causalica logo"}
-![](assets/images/logo.png){width=120 .only-pdf fig-alt="Causalica logo"}
+<!-- Brand lockup near the top of the landing page -->
+<div class="brand-lockup">
+  <img src="assets/images/logo.svg" alt="Causalica logo">
+  <div class="brand-wordmark">
+  <p class="brand-name">Causalica</p>
+  <p class="brand-tagline">Practical causal inference for real work</p>
+</div>
+</div>
 
+## What this is
 
-# Preface {.unnumbered}
+This is a living, opinionated set of notes on modern causal inference—written to be **used**, not merely read.
+It’s meant for researchers and practitioners who want to move from:
+**question → design → identification → estimation → robustness → communication**.
 
-This is a Quarto book.
+## Who it’s for
 
-To learn more about Quarto books visit <https://quarto.org/docs/books>.
+- **Applied researchers** who want a reliable workflow and mental models.
+- **Economists, data scientists, policy analysts** doing observational or experimental work.
+- Anyone who wants to build intuition for *when* a method works and *why* it fails.
+
+## How to use the book
+
+1. Start with **Foundations** to build shared language: potential outcomes, DAGs, identification.
+2. Jump to **Methods** when you have a concrete design in mind (DiD, IV, matching, synthetic control, etc.).
+3. Use **Checklists & templates** when writing: assumptions, threats, diagnostics, sensitivity.
+
+:::callout-tip
+If you’re reading this to solve a specific problem, begin with your *estimand*:
+**What effect, on what population, under what intervention, compared to what alternative?**
+:::
+
+## What you’ll get out of it
+
+- A clean way to translate real questions into **estimands**
+- Repeatable **workflows** for common designs
+- Practical guidance on **assumption checks**, diagnostics, and sensitivity analyses
+- Notes on pitfalls: post-treatment bias, bad controls, selection, interference, measurement issues
+
+## Roadmap
+
+This book evolves. The near-term build plan:
+
+- Foundations: counterfactuals, DAGs, adjustment, SUTVA/interference, measurement
+- Core designs: randomized experiments, DiD, IV, RD, matching, synthetic controls
+- Modern tools: doubly robust estimation, causal ML (CATE/HTE), mediation (carefully), sensitivity
+- Practice: reporting templates, robustness checklists, “what can go wrong” library
+
+## Contributing and reuse
+
+If you find an issue or want to contribute:
+- Suggest edits via the repo (issues/PRs), or share a short write-up and I’ll integrate it.
+- Contributions should favor **clarity**, **assumption discipline**, and **reproducible examples**.
+
+:::callout-note
+This is a living document. Expect iterative improvements and occasional restructuring.
+:::
+
+## About Causalica
+
+Causalica is a small, focused effort to build:
+- trustworthy learning resources (this book),
+- practical tooling (checklists, templates, automation),
+- and “Amare-in-the-loop” workflows for applied causal analysis.
+
+## Cite this
+
+- **Author:** Amare Teklay  
+- **Title:** *Causal Inference: Living notes by Causalica*  
+- **URL:** textbook.causalica.com  
+- **Accessed:** `{{< meta date >}}`
+
+## Contact
+
+- **Email:** amareteklay@gmail.com
+
+---
