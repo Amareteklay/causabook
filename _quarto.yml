@@ -11,7 +11,7 @@ project:
 
 book:
   title: "Causal Inference"
-  favicon: assets/images/logo.png
+  favicon: assets/images/logo.svg
   navbar:
     logo: assets/images/logo.png
   subtitle: "Living notes by Causalica"
