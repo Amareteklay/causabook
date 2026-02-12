@@ -13,7 +13,7 @@ book:
   title: "Causal Inference"
   favicon: assets/images/logo.svg
   navbar:
-    logo: assets/images/logo.png
+    logo: assets/images/logo.svg
   subtitle: "Living notes by Causalica"
   author: "Amare Teklay"
   date: last-modified
